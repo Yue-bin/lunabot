@@ -5,9 +5,8 @@ local base = _G
 local _M = {}
 
 local log = require("mods.log")
-
---初始化全局日志
-local g_log = log.init()
+local arg_parser = require("mods.arg_parser")
+local bot = require("mods.bot")
 
 --- 版本信息
 -- @ VERSION 版本号
@@ -40,23 +39,37 @@ local function check_proto(proto)
     return table_has_key(_M._SUPPORTED_PROTOS, proto)
 end
 
+-- 读取配置文件
+local config = arg_parser.parse_config()
+
+-- 初始化全局日志
+local g_log = log.init(config.global.log_file)
+g_log:setlevel(config.global.log_level)
+
+function _M.set_config(filename)
+    config = arg_parser.parse_config(filename)
+end
+
 -- bot工厂
 --- 用于生成新的bot实例的工厂函数
--- @string std 使用的标准，默认为onebot-11
--- @string proto 使用的协议，默认为websocket
--- @return bot lunabot实例
-function _M.new(std, proto)
-    local bot = {}
-    if not check_std(std) then
+-- 传入的泛型表包含以下字段
+--  name bot实例的名字，或者uid之类的
+--  std 使用的标准，默认为onebot-11
+--  proto 使用的协议，默认为websocket
+-- 返回值 bot lunabot实例
+function _M.new(info)
+    if info.std and not check_std(info.std) then
         return nil, "unsupported std"
     end
-    if not check_proto(proto) then
+    if info.proto and not check_proto(info.proto) then
         return nil, "unsupported proto"
     end
-    bot.std = std or "onebot-11"
-    bot.proto = proto or "websocket"
-    bot.version = _M.VERSION
-    return bot
+    local bot_instance = bot.new(info)
+    bot_instance.std = info.std or "onebot-11"
+    bot_instance.proto = info.proto or "websocket"
+    bot_instance.version = _M.VERSION
+    bot_instance.name = info.name
+    return bot_instance
 end
 
 -- 模块导出
