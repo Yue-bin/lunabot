@@ -22,9 +22,9 @@ _M._SUPPORTED_PROTOS = {
 }
 
 -- helper functions
-local table_has_key = function(t, key)
-    for k, _ in base.pairs(t) do
-        if k == key then
+local table_has_val = function(t, val)
+    for _, v in base.pairs(t) do
+        if v == val then
             return true
         end
     end
@@ -32,11 +32,11 @@ local table_has_key = function(t, key)
 end
 
 local function check_std(std)
-    return table_has_key(_M._SUPPORTED_STDS, std)
+    return table_has_val(_M._SUPPORTED_STDS, std)
 end
 
 local function check_proto(proto)
-    return table_has_key(_M._SUPPORTED_PROTOS, proto)
+    return table_has_val(_M._SUPPORTED_PROTOS, proto)
 end
 
 -- 读取配置文件
@@ -58,13 +58,16 @@ end
 --  proto 使用的协议，默认为websocket
 -- 返回值 bot lunabot实例
 function _M.new(info)
+    print(info.std)
+    print(check_std(info.std))
     if info.std and not check_std(info.std) then
         return nil, "unsupported std"
     end
     if info.proto and not check_proto(info.proto) then
         return nil, "unsupported proto"
     end
-    local bot_instance = bot.new(info)
+    local bot_instance = {}
+    base.setmetatable(bot_instance, { __index = bot })
     bot_instance.std = info.std or "onebot-11"
     bot_instance.proto = info.proto or "websocket"
     bot_instance.version = _M.VERSION

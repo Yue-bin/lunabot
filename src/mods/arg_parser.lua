@@ -17,7 +17,7 @@ local _M = {}
 
 --local argparse = require("argparse")
 local json = require("cjson")
-local arg_full = require("arg_full")
+local arg_full = require("mods.arg_full")
 
 --[[
 function _M.parse_cmdline()
@@ -70,7 +70,7 @@ function _M.parse_config(config_file)
         end
     else
         -- 若不为json文件，则使用lua的dofile函数
-        if not pcall(dofile(config_file)) then
+        if not pcall(function() dofile(config_file) end) then
             CONFIG({})
         end
     end
