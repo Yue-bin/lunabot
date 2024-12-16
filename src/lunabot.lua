@@ -4,6 +4,11 @@
 local base = _G
 local _M = {}
 
+local log = require("mods.log")
+
+--初始化全局日志
+local g_log = log.init()
+
 --- 版本信息
 -- @ VERSION 版本号
 _M.VERSION = "0.1.0"
