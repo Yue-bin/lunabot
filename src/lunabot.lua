@@ -1,3 +1,4 @@
+---@diagnostic disable: need-check-nil, undefined-field
 --- lunabot
 -- @module lunabot
 
@@ -66,7 +67,7 @@ end
 function _M.new(info)
     if is_init then
         g_log:log("creating new bot instance")
-        g_log:log("bot name: " .. info.name .. "bot std: " .. info.std .. "bot proto: " .. info.proto, "DEBUG")
+        g_log:log("bot name: " .. info.name .. " std: " .. info.std .. " proto: " .. info.proto, "DEBUG")
         if info.std and not check_std(info.std) then
             g_log:log("failed with error unsupported std", "ERROR")
             return nil, "unsupported std"
@@ -81,6 +82,7 @@ function _M.new(info)
         bot_instance.proto = info.proto or "websocket"
         bot_instance.version = _M.VERSION
         bot_instance.name = info.name
+        bot_instance.config = config.bot
         g_log:log("new bot instance " .. info.name .. " created")
         return bot_instance
     else

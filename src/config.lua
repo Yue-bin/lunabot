@@ -12,7 +12,7 @@ CONFIG {
     -- bot实例配置
     bot = {
         -- bot日志文件，其中的{botname}会被替换成bot实例的名字(如果存在)
-        log_file = "{botname}.log",
+        log_file = "bot-{botname}.log",
         -- 日志级别
         log_level = "DEBUG",
     }
