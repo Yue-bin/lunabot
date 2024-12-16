@@ -67,3 +67,4 @@ luac.out
 
 test/
 test*
+*.log
