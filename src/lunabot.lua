@@ -58,8 +58,6 @@ end
 --  proto 使用的协议，默认为websocket
 -- 返回值 bot lunabot实例
 function _M.new(info)
-    print(info.std)
-    print(check_std(info.std))
     if info.std and not check_std(info.std) then
         return nil, "unsupported std"
     end
