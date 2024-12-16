@@ -5,11 +5,11 @@ return {
 
     global = {
         log_file = "lunabot.log",
-        log_level = DEBUG,
+        log_level = "INFO",
     },
     bot = {
         log_file = "{botname}.log",
-        log_level = DEBUG,
+        log_level = "INFO",
     },
 
     -- 命令行参数注册表

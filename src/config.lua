@@ -6,7 +6,7 @@ CONFIG {
         -- 设为nil则不输出日志(处理上是输出到/dev/null)
         log_file = "lunabot.log",
         -- 日志级别
-        log_level = DEBUG,
+        log_level = "DEBUG",
     },
 
     -- bot实例配置
@@ -14,6 +14,6 @@ CONFIG {
         -- bot日志文件，其中的{botname}会被替换成bot实例的名字(如果存在)
         log_file = "{botname}.log",
         -- 日志级别
-        log_level = DEBUG,
+        log_level = "DEBUG",
     }
 }

@@ -53,8 +53,20 @@ function _M.parse_config(config_file)
         or "config.json"
     local parsed_config = {}
     -- 选择性地导入配置文件
+    -- 注意这里应当只处理global的配置，bot的配置应当在bot模块中处理
     function CONFIG(config)
         merge_table(config, parsed_config)
+        -- 特别的，可以设成stdout,stderr来输出到标准输出流和标准错误流
+        -- 设为nil则不输出日志(处理上是输出到/dev/null)
+        if parsed_config.global.log_file == "stdout" then
+            parsed_config.global.log_file = base.io.stdout
+        elseif parsed_config.global.log_file == "stderr" then
+            parsed_config.global.log_file = base.io.stderr
+        elseif parsed_config.global.log_file == "nil" then
+            parsed_config.global.log_file = base.io.open("/dev/null", "w")
+        else
+            parsed_config.global.log_file = base.io.open(parsed_config.global.log_file, "a")
+        end
     end
 
     if string.find(config_file, ".json$") then
