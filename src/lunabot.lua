@@ -5,9 +5,13 @@
 local base = _G
 local _M = {}
 
+local pl_app = require("pl.app")
+pl_app.require_here()
+
 local log = require("mods.log")
-local arg_parser = require("mods.arg_parser")
+local arg_parser = require("mods.arg.arg_parser")
 local bot = require("mods.bot")
+local utils = require("mods.utils")
 
 --- 版本信息
 -- @ VERSION 版本号
@@ -19,7 +23,8 @@ _M._SUPPORTED_STDS = {
 }
 
 _M._SUPPORTED_PROTOS = {
-    "websocket",
+    "ws",
+    "ws-reverse",
 }
 
 -- 局部变量
@@ -28,21 +33,12 @@ local g_log = nil
 local is_init = false
 
 -- helper functions
-local table_has_val = function(t, val)
-    for _, v in base.pairs(t) do
-        if v == val then
-            return true
-        end
-    end
-    return false
-end
-
 local function check_std(std)
-    return table_has_val(_M._SUPPORTED_STDS, std)
+    return utils.table_has_val(_M._SUPPORTED_STDS, std)
 end
 
 local function check_proto(proto)
-    return table_has_val(_M._SUPPORTED_PROTOS, proto)
+    return utils.table_has_val(_M._SUPPORTED_PROTOS, proto)
 end
 
 function _M.init(config_file)
@@ -79,7 +75,7 @@ function _M.new(info)
         local bot_instance = {}
         base.setmetatable(bot_instance, { __index = bot })
         bot_instance.std = info.std or "onebot-11"
-        bot_instance.proto = info.proto or "websocket"
+        bot_instance.proto = info.proto or "ws-reverse"
         bot_instance.version = _M.VERSION
         bot_instance.name = info.name
         bot_instance.config = config.bot

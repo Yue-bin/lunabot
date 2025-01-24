@@ -17,7 +17,7 @@ local _M = {}
 
 --local argparse = require("argparse")
 local json = require("cjson")
-local arg_full = require("mods.arg_full")
+local arg_full = require("mods.arg.arg_full")
 
 --[[
 function _M.parse_cmdline()
