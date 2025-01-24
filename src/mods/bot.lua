@@ -53,10 +53,6 @@ end
 
 -- 连接到实现端
 function _M:connect()
-    if self.proto == "websocket" then
-    else
-        base.error("unsupported protocol")
-    end
 end
 
 return _M

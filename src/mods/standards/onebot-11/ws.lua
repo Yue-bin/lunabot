@@ -10,10 +10,10 @@ local base = _G
 
 local ws = require("http.websocket")
 
-function _M.new(host, port, token)
+function _M.new(host, port, path, token)
     ws.new_from_uri("ws://" .. host .. ":" .. port)
     ws:connect()
-    
+    return nil, "not implemented"
 end
 
 return _M

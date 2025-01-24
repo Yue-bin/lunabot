@@ -12,4 +12,13 @@ function _M.table_has_val(t, val)
     return false
 end
 
+function _M.table_has_key(t, key)
+    for k, _ in pairs(t) do
+        if k == key then
+            return true
+        end
+    end
+    return false
+end
+
 return _M
