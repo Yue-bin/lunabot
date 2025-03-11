@@ -4,7 +4,7 @@ CONFIG {
         -- 全局日志文件
         -- 特别的，可以设成stdout,stderr来输出到标准输出流和标准错误流
         -- 设为nil则不输出日志(处理上是输出到/dev/null)
-        log_file = "lunabot.log",
+        log_path = "lunabot.log",
         -- 日志级别
         log_level = "DEBUG",
     },
