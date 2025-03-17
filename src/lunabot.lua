@@ -11,6 +11,7 @@ _M.VERSION = "0.1.0"
 _M.NAME = "lunabot"
 
 function _M.new(config)
+    _M.logger:log("luna is here~")
     local env = {
         logger = _M.logger,
         VERSION = _M.VERSION,
@@ -33,7 +34,6 @@ function _M.new(config)
         config = config,
     })
     --]]
-    _M.logger:log("luna is here~")
     return bot_ins
 end
 

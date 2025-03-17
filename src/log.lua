@@ -19,6 +19,9 @@ _M.LOG_LEVEL = "INFO"
 -- 未初始化无法使用
 _M.outputstream = nil
 
+-- 日志前缀
+_M.prefix = ""
+
 -- 设置日志级别
 function _M:setlevel(level)
     level = string.upper(level)
@@ -35,14 +38,16 @@ end
 function _M:log(msg, level)
     level = level or "INFO"
     if loglevels[level] >= loglevels[_M.LOG_LEVEL] then
+        local prefix = self.prefix ~= "" and "<" .. self.prefix .. "> " or ""
         -- 使用outputstream输出日志
-        self.outputstream:write(os.date("%Y.%m.%d-%H:%M:%S"), " [", level, "] ", msg, "\n")
+        self.outputstream:write(os.date("%Y.%m.%d-%H:%M:%S"), " [", level, "] ", prefix, msg, "\n")
     end
 end
 
 -- 初始化
-local function init(stream)
+local function init(stream, prefix)
     _M.outputstream = stream or io.stderr
+    _M.prefix = prefix or ""
     return _M
 end
 

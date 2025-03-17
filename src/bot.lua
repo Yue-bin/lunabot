@@ -8,6 +8,8 @@ local socket = require "socket"
 local json = require "cjson"
 local cqueues = require "cqueues"
 
+local logger = require("log").init(io.stderr, _ENV.config.name)
+logger:log("bot instance created, name is " .. _ENV.config.name)
 
 _M.socket_loop = http_server.listen {
     host = _ENV.config.socket.host,
