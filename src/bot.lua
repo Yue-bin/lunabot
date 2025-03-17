@@ -1,5 +1,4 @@
 local _M = {}
-local _late_load = {}
 
 local utils = require("utils")
 local http_server = require "http.server"
@@ -7,6 +6,7 @@ local http_headers = require "http.headers"
 local websocket = require "http.websocket"
 local socket = require "socket"
 local json = require "cjson"
+local cqueues = require "cqueues"
 
 
 _M.socket_loop = http_server.listen {
@@ -82,4 +82,22 @@ _M.socket_loop = http_server.listen {
         end
     end,
 }
+
+_M.is_running = false
+
+_M.main_loop = cqueues.new()
+_M.main_loop:wrap(function()
+    print("main_loop start")
+    while _M.is_running do
+        -- 通过cqueues.poll监听子控制器的文件描述符和事件
+        local ready = { cqueues.poll(_M.socket_loop) }
+        if #ready > 0 then
+            -- 子控制器有事件时，执行其事件循环
+            _M.socket_loop:step(0) -- 立即处理事件（非阻塞）
+        end
+        print("step")
+    end
+end)
+
+
 return utils.setmt(_M, "__name", _ENV.config.name)
