@@ -1,23 +1,25 @@
 local _M = {}
+local _late_load = {}
 
+local utils = require("utils")
 local http_server = require "http.server"
 local http_headers = require "http.headers"
 local websocket = require "http.websocket"
 local socket = require "socket"
 local json = require "cjson"
 
--- 创建 HTTP 服务器
-local server = http_server.listen {
-    host = self.info.host,
-    port = self.info.port,
+
+_M.socket_loop = http_server.listen {
+    host = _ENV.config.socket.host,
+    port = _ENV.config.socket.port,
     onstream = function(server, stream) -- 处理请求流
         local req_headers = stream:get_headers()
         local method = req_headers:get(":method")
         local path = req_headers:get(":path")
         local authorization = req_headers:get("authorization")
         print(authorization)
-        if method == "GET" and path == self.info.path then
-            if authorization == "Bearer " .. self.info.token then
+        if method == "GET" and path == _ENV.config.socket.path then
+            if authorization == "Bearer " .. _ENV.config.socket.token then
                 -- 处理 WebSocket 握手
                 local ws = websocket.new_from_stream(stream, req_headers)
                 ws:accept()                             -- 接受 WebSocket 连接
@@ -35,14 +37,14 @@ local server = http_server.listen {
                     elseif res and res.post_type == "meta_event" and res.meta_event_type == "heartbeat" then
                         print("收到心跳包")
                         local this_heartbeat = msg_time
-                        if this_heartbeat - last_heartbeat > self.info.heartbeat_timeout then
+                        if this_heartbeat - last_heartbeat > _ENV.config.socket.heartbeat_timeout then
                             print("心跳超时，关闭连接")
                             connection_alive = false
                             break
                         else
                             last_heartbeat = this_heartbeat
                         end
-                    elseif msg_time - last_heartbeat > self.info.heartbeat_timeout then
+                    elseif msg_time - last_heartbeat > _ENV.config.socket.heartbeat_timeout then
                         print("心跳超时，关闭连接")
                         connection_alive = false
                         break
@@ -67,7 +69,7 @@ local server = http_server.listen {
                 end
                 ws:close()
             else
-                -- 对非 WebSocket 请求发送错误
+                -- 对无鉴权请求发送错误
                 local res_headers = http_headers.new()
                 res_headers:append(":status", "401")
                 stream:write_headers(res_headers, true)
@@ -80,8 +82,4 @@ local server = http_server.listen {
         end
     end,
 }
-
-print("WebSocket 服务器启动于 ws://" .. self.info.host .. ":" .. self.info.port .. self.info.path)
-assert(server:loop())
-
-return _M
+return utils.setmt(_M, "__name", _ENV.config.name)

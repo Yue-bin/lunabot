@@ -11,8 +11,28 @@ _M.VERSION = "0.1.0"
 _M.NAME = "lunabot"
 
 function _M.new(config)
-    local bot_ins = { config = config }
-    setmetatable(bot_ins, { __index = _M })
+    local env = {
+        logger = _M.logger,
+        VERSION = _M.VERSION,
+        NAME = _M.NAME,
+        config = config,
+    }
+    local bot_ins = loadfile("src/bot.lua", "t", utils.add_env_outside(env, _ENV))()
+    -- 继承除了new之外的所有属性
+    --[[
+    setmetatable(bot_ins, {
+        __index = env,
+    })
+    bot_ins:init()
+    --]]
+    --[[
+    utils.add_env_outside(bot_ins, {
+        logger = _M.logger,
+        VERSION = _M.VERSION,
+        NAME = _M.NAME,
+        config = config,
+    })
+    --]]
     _M.logger:log("luna is here~")
     return bot_ins
 end

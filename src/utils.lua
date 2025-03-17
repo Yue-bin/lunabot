@@ -52,4 +52,16 @@ function _M.readonly(table)
     })
 end
 
+-- 此函数用于将模块包装为使用一次性init的延迟加载函数
+-- 用于避免模块加载时缺少元表依赖
+function _M.pack_to_init(mod, late_load)
+    mod.init = function()
+        for k, v in pairs(late_load) do
+            mod[k] = v
+        end
+        mod.init = nil
+    end
+    return mod
+end
+
 return _M
