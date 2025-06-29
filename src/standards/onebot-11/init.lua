@@ -4,7 +4,7 @@
 
 local _M = {}
 
-local utils = require("mods.utils")
+local utils = require("utils")
 
 _M._SUPPORTED_PROTOS = {
     "ws",
@@ -25,7 +25,7 @@ function _M.new(info)
     if not (info.host and info.port) then
         return nil, "no host and port specified"
     end
-    local proto = require("mods.standards.onebot-11." .. info.proto)
+    local proto = require("standards.onebot-11." .. info.proto)
     return proto.new(
         info.host,
         info.port,

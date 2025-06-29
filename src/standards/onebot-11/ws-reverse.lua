@@ -94,7 +94,7 @@ local function create_server()
     }
     -- 加入超时处理
     if _SERVER_INFO.heartbeat_timeout > 0 then
-        timer = require "mods.utils.timer".attach(server, _SERVER_INFO.heartbeat_timeout, function()
+        timer = require "src.utils.timer".attach(server, _SERVER_INFO.heartbeat_timeout, function()
             print("心跳超时，关闭服务器")
             server:close()
         end)
