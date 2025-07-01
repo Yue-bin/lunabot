@@ -63,10 +63,8 @@ function _M.table_has_val(t, val)
 end
 
 function _M.table_has_key(t, key)
-    for k, _ in pairs(t) do
-        if k == key then
-            return true
-        end
+    if t[key] then
+        return true
     end
     return false
 end
